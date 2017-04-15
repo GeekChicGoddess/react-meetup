@@ -1,0 +1,8 @@
+.Person{
+	text-align: center;
+}
+
+.Person-image{
+	border-radius: 10rem;
+	max-width: 10rem;
+}
