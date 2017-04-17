@@ -25,7 +25,9 @@ class PersonListContainer extends Component {
           name: `${person.name.first} ${person.name.last}`,
           src: `${person.picture.large}`,
           email: `${person.email}`,
-          phone: `${person.cell}`
+          phone: `${person.cell}`,
+          username: `${person.login.username}`,
+          password: `${person.login.password}`
         };
         dataArray.push(personObject);
       });
