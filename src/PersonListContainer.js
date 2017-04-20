@@ -3,7 +3,7 @@ import PersonList from './PersonList';
 
 class PersonListContainer extends Component {
   constructor(props){
-    super(props);
+    super();
 
     this.state = {
       data: []
@@ -19,15 +19,14 @@ class PersonListContainer extends Component {
       return response.json();
     })
     .then(function(json){
-      let dataArray = [];
-      json.results.forEach(function(person){
+      let dataArray = json.results.map(function(person){
         let personObject = {
           name: `${person.name.first} ${person.name.last}`,
           src: `${person.picture.large}`,
           email: `${person.email}`,
           phone: `${person.cell}`
         };
-        dataArray.push(personObject);
+        return personObject;
       });
       th.setState({data: dataArray});
     })
