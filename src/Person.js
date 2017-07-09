@@ -5,7 +5,7 @@ import './Person.css';
 class Person extends Component {
 
   constructor(props){
-    super(props);
+    super();
 
     this.state = {showLogin: false};
 
