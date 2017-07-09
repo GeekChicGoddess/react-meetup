@@ -1,8 +1,38 @@
-.Person{
-	text-align: center;
+.Person {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    /*    text-align: center;*/
 }
 
-.Person-image{
-	border-radius: 10rem;
-	max-width: 10rem;
+.Person > div {
+    flex-basis: 50%;
+}
+
+.Person p {
+    margin: 0;
+    padding: 0;
+}
+
+.Person-info {
+    padding-left: .5rem;
+}
+
+.Person-info h3 {
+    margin-top: 0;
+}
+
+.Person-image {
+    border-radius: 1rem;
+    height: auto;
+    width: 100%;
+}
+
+@media (min-width:600px) {
+    .Person {
+        display: inline-block;
+    }
+    .Person-image {
+        max-width: 10rem;
+    }
 }
