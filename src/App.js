@@ -6,7 +6,7 @@ class App extends Component {
   render() {
     const kia = {
       name: 'Kia',
-      src: 'https://kiafarhang.com/img/kf.jpg',
+      src: 'https://randomuser.me/api/portraits/men/74.jpg',
       email: 'kia@google.com',
       phone: '(123) 456-7890'
     };

@@ -5,6 +5,8 @@ Why use React for one-off UI elements? Well, you probably shouldn't. The framewo
 ```
 import React, { Component } from 'react';
 import Person from './Person';
+
+import './PersonList.css';
 ```
 
 Start the PersonList class definition like you normally would, but hold off before telling React what to return from the ```render()``` method:
@@ -58,7 +60,7 @@ class App extends Component {
   render() {
     const kia = {
       name: 'Kia',
-      src: 'https://kiafarhang.com/img/kf.jpg',
+      src: 'https://randomuser.me/api/portraits/men/74.jpg',
       email: 'kia@google.com',
       phone: '(123) 456-7890'
     };
