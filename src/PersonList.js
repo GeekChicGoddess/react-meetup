@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Person from './Person';
 
+import './PersonList.css';
+
 class PersonList extends Component {
   render() {
     const people = this.props.people;

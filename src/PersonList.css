@@ -1,0 +1,12 @@
+.PersonList {}
+
+@media (min-width: 600px) {
+    .PersonList {
+        display: flex;
+        flex-flow: row wrap;
+        /*		justify-content: space-between;*/
+    }
+    .PersonList .Person {
+        flex-basis: 20%;
+    }
+}

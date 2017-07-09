@@ -22,13 +22,17 @@ class Person extends Component {
     const showLogin = this.state.showLogin;
     return (
       <div className="Person">
-        <img className="Person-image" src={this.props.src} alt={this.props.name} onClick={this.toggleLoginInfo}/>
-        <h3 className="Person-name">{this.props.name}</h3>
-        <p>{this.props.email}</p>
-        <p>{this.props.phone}</p>
-        { showLogin &&
-          <LoginInfo username={this.props.username} password={this.props.password}/>          
-        }
+        <div>
+          <img className="Person-image" src={this.props.src} alt={this.props.name} onClick={this.toggleLoginInfo}/>
+        </div>
+        <div className='Person-info'>
+          <h3 className="Person-name">{this.props.name}</h3>
+          <p>{this.props.email}</p>
+          <p>{this.props.phone}</p>
+          { showLogin &&
+            <LoginInfo username={this.props.username} password={this.props.password}/>          
+          }
+        </div>
       </div>
     );
   }
