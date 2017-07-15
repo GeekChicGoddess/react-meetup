@@ -41,7 +41,7 @@ toggleLoginInfo(){
   }
 ```
 
-We're using the ```setState``` method again, this time with a [fat arrow](https://www.sitepoint.com/es6-arrow-functions-new-fat-concise-syntax-javascript/) because I felt like it. We didn't need or use this earlier, but ```setState``` always has access to the previous state. That's great in this case because...
+We're using the ```setState``` method again. We didn't need or use this earlier, but ```setState``` always has access to the previous state. That's great in this case because...
 
 All we do is set the state to the *opposite* of whatever it was before, using the ```!``` [logical operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_Operators). This works, of course, because ```showLogin``` is a binary ```true/false``` value.
 
