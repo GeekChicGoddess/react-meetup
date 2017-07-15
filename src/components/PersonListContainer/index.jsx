@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PersonList from './PersonList';
+import PersonList from '../PersonList';
 
 import backupPeople from './people.json';
 

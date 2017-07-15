@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Person from './Person';
+import Person from '../Person';
 
 import './PersonList.css';
 

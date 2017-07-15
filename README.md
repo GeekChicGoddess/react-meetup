@@ -1,90 +1,54 @@
-# Adding Event Handlers to Components #
+# Project Structure #
 
-Our components are rendering just fine. But beyond that, they don't actually *do* anything. JavaScript is all about responding to user behavior - which is what we'll tackle in this stage of the tutorial.
+Before we build anything more complex, I want to walk through some good practices to organize your code. It may not seem important for a scratch project of this size, but building good habits now will save you and your colleagues countless hours of frustration in the future.
 
-We're going to add an event listener to the ```Person``` component's ```img``` tag. When a user clicks on the photo, that person's username and password will be displayed under their email and phone number. If they click the image again, that info disappears. I know, I know - why the hell would we want to display that? We wouldn't. This is just about demonstrating events and conditional rendering.
+First, let's reorganize our project using [Airbnb's React Style Guide.](https://github.com/airbnb/javascript/tree/master/react) Code style guides are wonderful because they take some of the opinion out of development. If everyone on your team follows the same style guide, you don't have to worry about where to find a certain file or how to format your code.
 
-In the old days, we would probably do this by setting a "hide" class on the element containing the login information. Clicking the image would trigger a function that queries the DOM and checks the element's class. If it's "hide," the function would change it to "show," and vice versa. The CSS for those two classes would set the element as hidden or visible.
+(Airbnb also has [a general JavaScript style guide](https://github.com/airbnb/javascript) that I recommend you bookmark.)
 
-This approach essentially treats the DOM as the ["single source of truth"](https://css-tricks.com/project-need-react/) that we must beg for wisdom every time we want to change something. In complex applications, it can really slow things down.
+Right now, all of our components are jumbled together in our project's `src` folder. We've got just a handful, and that folder is already getting unruly. On larger projects with dozens of components, searching for anything would just suck.
 
-React offers a better way. We're going to make each ```Person``` component keep track of whether the login info is visible *inside its own state*. Clicking the ```img``` will trigger a method *of the component* that updates its state - and thus re-renders the element, which knows to only show the login info if it's in a certain state.
+Let's create a `components` folder inside `src`. Believe it or not, that's where all of our React components will live :)
 
-Let's get started! Bust open that ```Person.js``` file we started with so many moons ago. We need to add some methods before the ```render()``` one.
+Pushing all of our React components into one folder won't really help that much, so the next step is to create a separate folder for each component. Overkill? Well, on a small project it might be - but this is invaluable in larger codebases.
 
-```class Person extends Component {
+It also gets to a central tenet of React: keeping components far away from each other. If Facebook wants to change what the buttons on their site look like, they just have to open up the `Button` folder and go to town. *Everything* about that component - the code to render it, the code to test that it works and the code to set what it looks like - lives in one folder. Anyone working on the project can change the `Button` component and be reasonably confident they won't break anything else.
 
-  constructor(props){
-    super();
+We'll start with our `App` component and use the same process for the rest. Create an `App` folder inside `src/components`, dropping `App.jsx`, `App.css` and `App.test.js` inside.
 
-    this.state = {showLogin: false};
-```
+Head into that new `App` folder and change `App.jsx` to `index.jsx`. That'll help us cut down on the `import` code we have to write later.
 
-So this is simple enough, right? We're giving our component a custom ```render()``` method, so we must first call ```super()``` to do all the normal rendering it'll get from React. This method accepts ```props```, and if I wanted to access them in the constructor I would change ```super()``` to ```super(props)```. 
+I'll walk you through one more example. Create a `Person` next to the `App` one in `src/components`, and drop `Person.jsx` and `Person.css` inside. Then change `Person.jsx` to `index.jsx`.
 
-We don't need any props in the ```render()``` method, though, because we want our component to default to *not* showing the username and password. So we give state a ```showLogin``` property set to ```false```.
+Repeat this process for our `PersonList`, `LoginInfo` and `PersonListContainer` components. Remember the `people.json` file we created with mock API results? Throw that in with `PersonListContainer`, because that's the component that uses it.
 
-```
-    this.toggleLoginInfo = this.toggleLoginInfo.bind(this);
-  }
-```
+Leave `index.js` and `index.css` in the root `src` folder - Create React App looks there to build the app.
 
-Remember the ```this``` madness? Yeah, this is more of that. ```toggleLoginInfo``` is the name of the method we're about to write. It needs to access the ```this``` that refers to the component, so we have to bind that ```this``` up in the constructor. This is us telling React, "Hey, when you make this component, be sure that when its ```toggleLoginInfo``` method uses ```this``` it refers to the component."
+Speaking of Create React App, once you've moved/renamed everything do an `npm run start` in your terminal. Your app won't run - because we moved everything around without telling our code about it! Luckily, this is an easy fix.
 
-Let's write that method, shall we? It's actually really simple.
+Head into `index.js` and change this line:
 
-```
-toggleLoginInfo(){
-    this.setState(prevState => ({
-      showLogin: !prevState.showLogin
-    }));
-  }
-```
+`import App from './App';`
 
-We're using the ```setState``` method again. We didn't need or use this earlier, but ```setState``` always has access to the previous state. That's great in this case because...
+to:
 
-All we do is set the state to the *opposite* of whatever it was before, using the ```!``` [logical operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_Operators). This works, of course, because ```showLogin``` is a binary ```true/false``` value.
+`import App from ./components/App;`
 
-One more change: we need to tell our component to render the login information...but only if the state's ```showLogin``` is set to ```true```. Let's quickly create a ```LoginInfo.js``` file to house that separate component.
+That'll point the app's entry point to the new location of the `App` component.
+
+Unfortunately, you'll get another error - because we have to do this for the rest of our components. In the `index.jsx` for each component, change any component imports like so:
 
 ```
-import React, { Component } from 'react';
-
-class LoginInfo extends Component {
-  render() {
-    return (
-      <div className='LoginInfo'>
-        <p><strong>Username:</strong> {this.props.username}</p>
-        <p><strong>Password:</strong> {this.props.password}</p>
-      </div>
-    );
-  }
-}
-
-export default LoginInfo;
-```
-At this point, a component like this doesn't need much explanation. It's just going to hold the ```username``` and ```password``` properties we pass it. Let's get back to ```Person.js``` and add to the ```render()``` method.
-
-```
-  render() {
-    const showLogin = this.state.showLogin;
-    return (
-      <div className="Person">
-        <img className="Person-image" src={this.props.src} alt={this.props.name} onClick={this.toggleLoginInfo}/>
-        <h3 className="Person-name">{this.props.name}</h3>
-        <p>{this.props.email}</p>
-        <p>{this.props.phone}</p>
-        { showLogin &&
-          <LoginInfo username={this.props.username} password={this.props.password}/>          
-        }
-      </div>
-    );
-  }
-}
+//import PersonListContainer from './PersonListContainer';
+import PersonListContainer from '../PersonListContainer';
 ```
 
-What's going on after the phone ```p``` tag *looks* complicated, but it's just a fancy ```if``` statement stolen from React's docs on [conditional rendering](https://facebook.github.io/react/docs/conditional-rendering.html). We're saying, "If ```showLogin``` is ```true``` when you render the component, render ```ShowLogin``` too. Otherwise, don't render it."
+That's us telling React "Instead of looking in the current directory, go up one level into the `components` directory - then grab the relevant component."
 
-You'll also noticed we added an ```onClick``` property to our ```img``` tag. That's how we tell React to run the component's ```toggleLoginInfo``` method when someone clicks the picture.
+Remember when we changed all the components' `.jsx` files to `index.jsx`? This is why. If we hadn't, we'd have to write our imports like this:
 
-Save your files, ```npm start``` and click on a photo. You should see login information appear and disappear as you click! That's conditional rendering - not too tricky, right?
+`import PersonListContainer from '../PersonListContainer/PersonListContainer;`
+
+That's just unecessary extra work.
+
+We've got a good foundation to build out our project. Let's take one more detour, though, and explore a powerful tool to improve code readability and cut down on debugging nightmares.

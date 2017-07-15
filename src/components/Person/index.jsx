@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LoginInfo from './LoginInfo';
+import LoginInfo from '../LoginInfo';
 import './Person.css';
 
 class Person extends Component {
