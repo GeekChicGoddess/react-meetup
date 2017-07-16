@@ -1,16 +1,15 @@
+// @flow
+
 import React, { Component } from 'react';
 import PersonList from '../PersonList';
 
 import backupPeople from './people.json';
 
 class PersonListContainer extends Component {
-  constructor(props){
-    super();
 
-    this.state = {
-      data: []
-    };
-  }
+  state = {
+    data: []
+  };
 
   componentDidMount() {
     const th = this;

@@ -1,18 +1,35 @@
+// @flow
+
 import React, { Component } from 'react';
 import LoginInfo from '../LoginInfo';
 import './Person.css';
 
 class Person extends Component {
 
-  constructor(props){
-    super();
+  props: {
+    src: string,
+    name: string,
+    email: string,
+    phone: string,
+    username: string,
+    password: string
+  };
 
-    this.state = {showLogin: false};
+  static defaultProps = {
+    name: 'Rita React'
+  };
+
+  state = {
+    showLogin: false
+  };
+
+  constructor(){
+    super();
 
     this.toggleLoginInfo = this.toggleLoginInfo.bind(this);
   }
 
-  toggleLoginInfo(){
+  toggleLoginInfo = () => {
     this.setState(prevState => ({
       showLogin: !prevState.showLogin
     }));
