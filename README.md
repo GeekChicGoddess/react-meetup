@@ -1,303 +1,210 @@
-# Writing Smarter JavaScript with Flow #
+# Building a Multi-Page Application with React Router #
 
-To illustrate the value of the tool we're about to add to our project, let's start with a situation we've all likely faced. Let's say I have a function:
+You can do quite a bit with a single-page application, but eventually you'll probably want to add some routes to your app. Anything that requires authentication, for example, should probably send users to a `/login` page. They should be able to tweak their settings on a `/settings` route, etc.
 
-```
-function sum(a, b){
-    return a + b;
-}
-```
+Luckily, we don't have to build separate React apps for each page of our application. The amazing [React Router](https://reacttraining.com/react-router/) lets us add navigational components to our code. Those components tell the app what to render based on the current URL.
 
-I use my function to add two numbers, like so:
+You see, our app technically _will_ still be just a single page. Someone visiting it would download all the code, routes and components the first time they hit it. From there, they don't have to request any additional pages from the server - React Router just shows them different parts of the app we've created as they navigate through it.
 
-`let sum = sum(15, 20); //sum = 35`
+This approach does have drawbacks, namely that not having separate discrete pages can hurt your site's search engine ranking. We won't cover that issue in depth here, other than to say React Router supports [server-side rendering](https://reacttraining.com/react-router/web/guides/server-rendering), which gets around the problem.
 
-This is a super simple function and it's pretty hard to screw up.
+Head to the root of the project on the command line and run the following: 
 
-But as my project grows - like our React app is growing - something may go wrong. As we pass around props, we may accidentally pass a _string_ to our `sum()` function instead of a number. 
+`npm install react-router-dom`
 
-`let sum = sum('15', 20); //sum = '1520'`
+Now let's get started!
 
-That's not at all what we want our function to do, but JavaScript will do it anyway. Why? Well, JavaScript is a __loosely typed language,__ which basically means __you don't need to declare a variable or parameter's type.__
+### Rendering the root of our app ### 
 
-We know that `sum()` takes two numbers, but because of loose typing, it actually doesn't care whether `a` and `b` are numbers, strings, arrays, objects or dates. It just adds `a` and `b` and returns the results.
+So far, everything we've built lives in the `App` component, which the `index.js` file in our `src` file renders. Let's call this the home page of our app - a screen full of users.
 
-You can lose hours of productivity to issues like this: accidentally passing the wrong type of variable to a function, or accidentally _converting_ a variable from one type to another deep within your program or app. 
+To learn how React Router, we're going to explicitly tell it to render the `PersonListContainer` component (and everything inside it) when anyone visits the root `/` path of the app.
 
-__Strongly typed languages__ like Java and C++ don't have this problem. In C++, for example, our `sum()` function would look like this:
+Open up `src/index.js` and add the following line to your import statements:
 
-```
-int sum(int a, int b){
-    return a + b;
-}
-```
+`import { BrowserRouter as Router} from 'react-router-dom';`
 
-If we passed a string to `sum()`, our C++ compiler would throw an error. We'd go, "Oh, duh, I screwed up somewhere," fix the mistake and be on our way in _seconds_ - no hunting for where the code went wrong.
-
-Luckily, we don't have to switch to C++ or Java. There are a few tools to add __static typing__ to JS, and these are two of the most common ones:
-
-- [Microsoft's TypeScript](https://www.typescriptlang.org/), and
-- [Flow](https://flow.org/en/), from the Fine Folks at Facebook.
-
-Flow is extremely easy to drop into a create-react-app project, so we'll use it for this tutorial. Head to the terminal and run the following two commands:
+We're taking [React Router's `BrowserRouter`](https://reacttraining.com/react-router/web/api/BrowserRouter) component and giving it a simpler name. `BrowserRouter` relies on [the HTML5 history API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to manage the UI of your app. Let's wrap the whole `App` in it so we can use it throughout:
 
 ```
-npm install flow-bin --save-dev
-flow init
+ReactDOM.render(
+  <Router>
+      <App/>
+  </Router>,
+    document.getElementById('root')
+);
 ```
 
-Flow just created a `.flowconfig` file in the root of our project directory. We can customize how Flow will run in this file, but it'll work fine out of the box for our purposes.
+Next, open up `App/index.js` and import [React Router's `Route`](https://reacttraining.com/react-router/web/api/Route) component:
 
-From now on, whenever we run `flow` on the command line (like we would `npm run start`), Flow will start up a little server and parse all of our code. It looks at files that start with `// @flow` on the first line - so if we ran it right now, it wouldn't look at any of our components. Head into `src/components/PersonList/index.jsx` and add that marker to the top of the file:
+import { Route } from 'react-router-dom';
 
-```
-// @flow
+To better understand React Router, it helps to keep in mind that _a route is just a component_. We're basically going to say, "Hey, when the URL path matches x, render x component. If it matches y, render y component instead."
 
-import React, { Component } from 'react';
-import Person from '../Person';
+change `App`'s render method to the following:
 
 ```
-
-Run `flow` on the command line. You'll get a message that says `No errors!` Which is great - but wait, we have a function in this file:
-
-```
-const components = people.map(function(person, index){
-    return <Person key={index} name={person.name} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password}/>;
-  });
+  render() {
+    return (
+      <Route exact path='/' component={PersonListContainer}/>
+    );
+  }
 ```
 
-Shouldn't flow complain that we don't tell it what that `person` should be an object and `index` should be a number?
+So, we added a `Route`, and said "When the URL matches `/`, render the `PersonListContainer` component." To do that, we just set the `Route`'s `path` prop to '/'.
 
-Well, no - because in this case, Flow has _inferred_ those types from the rest of our code, so it won't throw an error. Always keep this in mind - and err on the side of over-describing your code to Flow.
+Save the file and you should see your app rendering the same as before. But head up to the URL bar and change it from `localhost:3000` to `localhost:3000/test`.
 
-Let's do that now. Change the function like so:
+Blank screen, right? Perfect - React Router is working. See, we told it to render the `PersonListContainer` _only when the URL exactly matched `/`_ - that's what the `exact` before `path` meant. `/test` doesn't match `/` exactly, so the Route doesn't render `PersonListContainer`. We haven't set up any more routes, so it doesn't render anything at all.
+
+We used an exact path because if we didn't, further routes wouldn't work properly. If we build a route called `/profile`, that would still match `/` - so the router would render both. 
+
+### Creating Profile Links for Each Person ###
+
+Remember when we set up our app so clicking on someone's profile picture would display their login credentials? Well, let's switch to a more realistic use case. We're going to display a user's profile on a separate page when we click their profile image instead.
+
+To do this, we're going to edit the `Person` component to wrap the profile photo in a React Router `Link` component. That `Link` will send the browser to `/users/:id`, where `id` is the ID of the user we've clicked on. This will take a few steps, so let's dive in.
+
+First, you'll notice we don't actually _have_ an ID property on our `Person` component. That's an easy fix: add it to the component's `props` declaration like so to start:
+
+```
+props: {
+    src: string,
+    name: string,
+    email: string,
+    phone: string,
+    username: string,
+    password: string,
+    id: number
+  };
+```
+
+Save and the app should render fine - though if you ran `flow` it would complain that you never pass `id` to `Person` when you render them all in `PersonList`. Let's change that by grabbing an ID when we make our API call to the random user generator. Open up `src/components/PersonListContainer/index.jsx` and update the `componentDidMount` method:
+
+```
+    .then((json)=>{
+      let dataArray = json.results.map((person)=>{
+        let personObject = {
+          name: `${person.name.first} ${person.name.last}`,
+          src: `${person.picture.large}`,
+          email: `${person.email}`,
+          phone: `${person.cell}`,
+          username: `${person.login.username}`,
+          password: `${person.login.password}`,
+          id: person.id.value
+        };
+        return personObject;
+      });
+      th.setState({data: dataArray});
+    })
+```
+
+We only changed the line after `password`. We're just also grabbing the `id` value our API returns. Next, we can open up `PersonList/index.jsx` and change the `map` function where we render all of our `Person` components:
 
 ```
 const components = people.map(function(person: Object, index: number){
-    return <Person key={index} name={person.name} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password}/>;
+    return <Person key={index} name={person.name} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password} id={person.password}/>;
   });
 ```
 
-If you're ever unsure of how to annotate a type, just [check out the Flow docs](https://flow.org/en/docs/types/).
+Great - now our each `Person` component will have access to that user's ID. Open up `Person/index.jsx` and import what we need from React Router up top:
 
-Alright, we've Flow-ified one component. Let's try the PersonListContainer next:
+`import { Link } from 'react-router-dom';`
+
+[The `Link` component](https://reacttraining.com/react-router/web/api/Link) is where you tell your app how to manipulate the URL location in the browser. If a user's ID is 555, we want clicking on their profile image to change the URL to `/users/555`. So let's define the path the `Link` will use in our `Person`'s `render` method:
+```
+render() {
+    const showLogin = this.state.showLogin;
+    const linkPath = `/users/${this.props.id}`;
+    ...
+}
+```
+
+Next, let's wrap the profile image in a `Link`:
+
+```
+    return (
+      <div className="Person">
+        <div>
+          <Link to={linkPath}>
+            <img className="Person-image" src={this.props.src} alt={this.props.name}/>
+          </Link>
+        </div>
+```
+
+Simple enough, right? You'll notice I removed the click handler for the image - we're no longer going to render the login credentials conditionally, so you can remove that code below:
+
+```
+        <div className='Person-info'>
+          <h3 className="Person-name">{this.props.name}</h3>
+          <p>{this.props.email}</p>
+          <p>{this.props.phone}</p>
+        </div>
+```
+
+Of course, we should come back later and clean up all the state-related work we did to render those login credentials if we're never going to use them.
+
+Now clicking on a profile image should take you `localhost:3000/users/344560-9936`, or whatever the given user's ID is. That should result in a blank page - remember, it's not exactly matching `/`, so the React Router isn't rendering anything. Let's fix that.
+
+### Rendering Profile Components ###
+
+We need to tell React Router to render a `Profile` component when the URL matches `/users/id`, where `id` is the `id` of the user we clicked on. Let's create a very simple `Profile` component in a new `src/components/Profile/index.jsx` file:
 
 ```
 // @flow
 
 import React, { Component } from 'react';
-import PersonList from '../PersonList';
 
-import backupPeople from './people.json';
-```
-
-Run `flow` and...
-
-```
-src/components/PersonListContainer/index.jsx:9
-  9:   constructor(props){
-                   ^^^^^ parameter `props`. Missing annotation
-
-src/components/PersonListContainer/index.jsx:12
-                      v
- 12:     this.state = {
- 13:       data: []
- 14:     };
-         ^ object literal. This type is incompatible with
-  8: class PersonListContainer extends Component {
-                                       ^^^^^^^^^ undefined. Did you forget to declare type parameter `State` of identifier `Component`?
-
-src/components/PersonListContainer/index.jsx:38
- 38:       th.setState({data: dataArray});
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call of method `setState`
- 38:       th.setState({data: dataArray});
-                       ^^^^^^^^^^^^^^^^^ property `data` of object literal. Property cannot be assigned on possibly undefined value
-  8: class PersonListContainer extends Component {
-                                       ^^^^^^^^^ undefined. Did you forget to declare type parameter `State` of identifier `Component`?
-
-src/components/PersonListContainer/index.jsx:56
- 56:       th.setState({data: dataArray});
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call of method `setState`
- 56:       th.setState({data: dataArray});
-                       ^^^^^^^^^^^^^^^^^ property `data` of object literal. Property cannot be assigned on possibly undefined value
-  8: class PersonListContainer extends Component {
-                                       ^^^^^^^^^ undefined. Did you forget to declare type parameter `State` of identifier `Component`?
-
-src/components/PersonListContainer/index.jsx:65
- 65:         <PersonList people={this.state.data}/>
-                                            ^^^^ property `data`. Property cannot be accessed on possibly undefined value
- 65:         <PersonList people={this.state.data}/>
-                                 ^^^^^^^^^^ undefined. Did you forget to declare type parameter `State` of identifier `Component`?
-
-
-Found 5 errors
-```
-
-What just happened?!? Well, as scary as this looks, it's actually fairly simple. The errors revolve around two things:
-
-1. We didn't tell flow what type the `props` we pass to `PersonListContainer` will be, and
-2. We didn't tell Flow what the component's initial state is (and what types it'll contain).
-
-Just like declaring the parameters of a function, you can (and should) tell Flow exactly what props your components take and what types they'll be. Same with state. Flow's docs [tell us how to use it with React](https://flow.org/en/docs/frameworks/react/), so let's follow their lead and change `PersonListContainer` like so:
-
-```
-class PersonListContainer extends Component {
-  // constructor(props){
-  //   super();
-
-  //   this.state = {
-  //     data: []
-  //   };
-  // }
-
-  state = {
-    data: []
-  };
-```
-
-We declared our component's initial state as an object _outside the constructor_, which Flow lets us do. You'll notice we didn't say `data: Array` in that declaration - Flow figured it out itself, because we set the initial value to an empty array.
-
-While we were at it, we removed the constructor entirely - because we were only using it to declare initial state. If we were `bind`ing other methods in the constructor, we'd keep it around.
-
-(Also: I left it in for illustration purposes, but we actually shouldn't have called our constructor with `props` in the first place - we never used `props` in that function!)
-
-Run `flow` again. Just like that, we eliminated _all_ of the errors it threw at us. As a bonus, our component is likely a bit easier for someone else to understand at a glance.
-
-To really see the benefit of that last point, let's open up our `Person` component and add Flow.
-
-```
-// @flow
-
-import React, { Component } from 'react';
-import LoginInfo from '../LoginInfo';
-import './Person.css';
-```
-
-Running `flow` should get you some similar errors and a new one. Let's tackle the easy ones first:
-
-```
-  state = {
-    showLogin: false
-  };
-
-  constructor(){
-    super();
-
-    this.toggleLoginInfo = this.toggleLoginInfo.bind(this);
-  }
-```
-
-Like before, we abstracted state into its own object and removed `props` from the constructor call, because we don't use them in the constructor. We should be down to one error:
-
-```
- 16:     this.toggleLoginInfo = this.toggleLoginInfo.bind(this);
-              ^^^^^^^^^^^^^^^ property `toggleLoginInfo`. Covariant property `toggleLoginInfo` incompatible with contravariant use in
- 16:     this.toggleLoginInfo = this.toggleLoginInfo.bind(this);
-         ^^^^^^^^^^^^^^^^^^^^ assignment of property `toggleLoginInfo`
-```
-
-There are [a few](https://github.com/facebook/flow/issues/3076) [GitHub issues](https://github.com/facebook/flow/issues/1397) examining this error on a much better level than I'm able to. Luckily, there's an easy fix:
-
-```
-  toggleLoginInfo = function() {
-    this.setState(prevState => ({
-      showLogin: !prevState.showLogin
-    }));
-  }
-```
-
-Or, if you prefer:
-
-```
-  toggleLoginInfo = () => {
-    this.setState(prevState => ({
-      showLogin: !prevState.showLogin
-    }));
-  }
-```
-
-Either way, telling Flow that toggleLoginInfo is a `Function` type will remove the error.
-
-Before we finish up with Flow, let's make this component even better. We're going to declare `props` up top like we do with state - so anyone looking at the file can instantly know what the component needs to render.
-
-```
-class Person extends Component {
-
+class Profile extends Component{
   props: {
-    src: string,
-    name: string,
-    email: string,
-    phone: string,
-    username: string,
-    password: string
+    match: Object
   };
 
-  state = {
-    showLogin: false
-  };
+  render(){
+    return(
+      <div className='Profile'>
+        <h3>The user's ID is {this.props.match.params.id}</h3>
+      </div>
+    )
+  }
+}
+
+export default Profile;
 ```
 
-There - much easier than hunting and pecking through the component's `render` method to see exactly where we refer to `this.props`. Check this out, too: head into `PersonList` and remove the change the `map` function so we don't pass a `name` property to the `Person`s we create:
+Most of this is pretty basic, so I'll focus on what's new. Our component expects a `match` prop - essentially, this is an object that tracks how we matched the URL React Router was looking for.
+
+The `match` prop has a `params` property, also an object, that contains all the parameters we passed with our `Link` component. Anything in a url with a colon `:` before it is a parameter. Since we linked to `/users/:id`, the `id` is our parameter.
+
+Now, this component doesn't have a lot of real-world use. If we had the user's ID, we'd normally take that and query our database for the user, so we could display all their public information in their profile. (One caveat: React Router parameters always come through as strings, so you'd want to `parseInt()` the parameter before querying the DB with it.)
+
+The random user API doesn't expose ID-based endpoints, so we've created this simple component for demo purposes. In real life, though, try to make your routes a bit more interesting :)
+
+There's one more step left to creating a multi-page app: defining the second `Route`. Open `components/App/index.jsx` back up and let's do that now. Import `Profile` at the top:
+
+`import Profile from '../Profile';`
+
+Then update the following:
 
 ```
-    const components = people.map(function(person: Object, index: number){
-    return <Person key={index} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password}/>;
-  });
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <Route exact path='/' component={PersonListContainer}/>
+        <Route path='/users/:id' component={Profile}/>
+      </div>
+    );
+  }
+}
+
+export default App;
 ```
 
-Run `flow` and you'll get an error:
+We first created a `<div>` to hold our two `Route`s, as every React component can only return one element. Then we added a second `Route`, this time without the `exact` property.
 
-```
-src/components/PersonList/index.jsx:12
- 12:     return <Person key={index} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password}/>;
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ React element `Person`
-              v
-  9:   props: {
- 10:     src: string,
- 11:     name: string,
-...:
- 16:   };
-       ^ property `name`. Property not found in. See: src/components/Person/index.jsx:9
- 12:     return <Person key={index} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password}/>;
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ props of React element `Person`
-```
+This is telling React Router, when the URL matches `/users/anything`, render the `Profile` component - and send `anything` as a parameter to that component so it can use it.
 
-This is Flow saying, "Wait, you told me every `Person` has a `name` component, but you wrote code that renders a `Person` without a `name`. What's up with that?"
+Our app should now take you to a user's "profile page" when you click their photo. We're able to use the back button to get back to the root of the app, which renders a list of people. (If a user's ID is `null`, don't worry - the random user API just sends those sometimes.)
 
-We can even set a _default_ value for `props`, if we want to be able to render a component without passing all of them:
-
-```
-  props: {
-    src: string,
-    name: string,
-    email: string,
-    phone: string,
-    username: string,
-    password: string
-  };
-
-  static defaultProps = {
-    name: 'Rita React'
-  };
-
-```
-
-This does two things:
-
-1. Flow will no longer complain if we don't pass a `name` to a `Person`, and
-2. If we don't, that `Person`'s name will be set to `Rita React`. Remove `name` from your `PersonList` mapping function and do an `npm run start` to see for yourself.
-
-(Note: You don't _need_ Flow to declare prop types or default props; React [handles that out of the box.](https://facebook.github.io/react/docs/typechecking-with-proptypes.html) Still, Flow's way of doing things is a bit more succinct.)
-
-This was a _long_ section, but I hope you found it valuable. Flow can save you a lot of headaches when used properly. It's even better when you don't have to remember to run `flow` on the command line.
-
-Where I work, we use [the `pre-commit` npm package](https://www.npmjs.com/package/pre-commit) to run Flow. We're actually _unable_ to commit our work until we fix any errors that Flow discovers. Makes for fewer issues on projects.
-
-Oh - and I'll leave you with this. Sometimes Flow is just _dumb_, and it throws an error that may make no sense to you. My rule is, if it takes more than 15 minutes to try and satisfy Flow, Flow is unreasonable. You can use `// $FlowFixMe` to tell it to ignore a troublesome line:
-
-```
-// $FlowFixMe 
-code that throws an error here
-```
-
-You can also set your own ignore flags [in your `.flowconfig` file.](https://flow.org/en/docs/config/options/)
+You'll notice that every time we go back to the home page, we get a new list of 10 people. That's because React Router is rerendering the component every time, which triggers its `ComponentDidMount` method, which pings the API, etc. For some further exploration, take a look at [the router's `Route render` API](https://reacttraining.com/react-router/web/api/Route/render-func) and see if you can figure out how to prevent that from occurring.

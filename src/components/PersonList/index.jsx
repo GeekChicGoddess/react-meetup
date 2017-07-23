@@ -9,7 +9,7 @@ class PersonList extends Component {
   render() {
     const people = this.props.people;
     const components = people.map(function(person: Object, index: number){
-    return <Person key={index} name={person.name} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password}/>;
+    return <Person key={index} name={person.name} src={person.src} email={person.email} phone={person.phone} username={person.username} password={person.password} id={person.id}/>;
   });
     return (
       <div className="PersonList">

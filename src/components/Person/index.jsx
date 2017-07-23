@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import LoginInfo from '../LoginInfo';
 import './Person.css';
 
@@ -12,7 +13,8 @@ class Person extends Component {
     email: string,
     phone: string,
     username: string,
-    password: string
+    password: string,
+    id: number
   };
 
   static defaultProps = {
@@ -37,18 +39,18 @@ class Person extends Component {
 
   render() {
     const showLogin = this.state.showLogin;
+    const linkPath = `/users/${this.props.id}`;
     return (
       <div className="Person">
         <div>
-          <img className="Person-image" src={this.props.src} alt={this.props.name} onClick={this.toggleLoginInfo}/>
+          <Link to={linkPath}>
+            <img className="Person-image" src={this.props.src} alt={this.props.name}/>
+          </Link>
         </div>
         <div className='Person-info'>
           <h3 className="Person-name">{this.props.name}</h3>
           <p>{this.props.email}</p>
           <p>{this.props.phone}</p>
-          { showLogin &&
-            <LoginInfo username={this.props.username} password={this.props.password}/>          
-          }
         </div>
       </div>
     );

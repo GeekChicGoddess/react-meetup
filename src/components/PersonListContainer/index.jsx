@@ -27,8 +27,8 @@ class PersonListContainer extends Component {
           email: `${person.email}`,
           phone: `${person.cell}`,
           username: `${person.login.username}`,
-          password: `${person.login.password}`
-
+          password: `${person.login.password}`,
+          id: person.id.value
         };
         return personObject;
       });
