@@ -10,7 +10,7 @@ This approach essentially treats the DOM as the ["single source of truth"](https
 
 React offers a better way. We're going to make each ```Person``` component keep track of whether the login info is visible *inside its own state*. Clicking the ```img``` will trigger a method *of the component* that updates its state - and thus re-renders the element, which knows to only show the login info if it's in a certain state.
 
-Let's get started! Bust open that ```Person.js``` file we started with so many moons ago. We need to add some methods before the ```render()``` one.
+Let's get started! Bust open that ```Person.jsx``` file we started with so many moons ago. We need to add some methods before the ```render()``` one.
 
 ```class Person extends Component {
 
@@ -20,7 +20,7 @@ Let's get started! Bust open that ```Person.js``` file we started with so many m
     this.state = {showLogin: false};
 ```
 
-So this is simple enough, right? We're giving our component a custom ```render()``` method, so we must first call ```super()``` to do all the normal rendering it'll get from React. This method accepts ```props```, and if I wanted to access them in the constructor I would change ```super()``` to ```super(props)```. 
+So this is simple enough, right? We're giving our component a custom ```render()``` method, so we must first call ```super()``` to do all the normal rendering it'll get from React. This method accepts ```props```, but we don't need 
 
 We don't need any props in the ```render()``` method, though, because we want our component to default to *not* showing the username and password. So we give state a ```showLogin``` property set to ```false```.
 
@@ -45,7 +45,7 @@ We're using the ```setState``` method again. We didn't need or use this earlier,
 
 All we do is set the state to the *opposite* of whatever it was before, using the ```!``` [logical operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_Operators). This works, of course, because ```showLogin``` is a binary ```true/false``` value.
 
-One more change: we need to tell our component to render the login information...but only if the state's ```showLogin``` is set to ```true```. Let's quickly create a ```LoginInfo.js``` file to house that separate component.
+One more change: we need to tell our component to render the login information...but only if the state's ```showLogin``` is set to ```true```. Let's quickly create a ```LoginInfo.jsx``` file to house that separate component.
 
 ```
 import React, { Component } from 'react';
@@ -63,7 +63,7 @@ class LoginInfo extends Component {
 
 export default LoginInfo;
 ```
-At this point, a component like this doesn't need much explanation. It's just going to hold the ```username``` and ```password``` properties we pass it. Let's get back to ```Person.js``` and add to the ```render()``` method.
+At this point, a component like this doesn't need much explanation. It's just going to hold the ```username``` and ```password``` properties we pass it. Let's get back to ```Person.jsx``` and add to the ```render()``` method.
 
 ```
   render() {
@@ -83,8 +83,10 @@ At this point, a component like this doesn't need much explanation. It's just go
 }
 ```
 
-What's going on after the phone ```p``` tag *looks* complicated, but it's just a fancy ```if``` statement stolen from React's docs on [conditional rendering](https://facebook.github.io/react/docs/conditional-rendering.html). We're saying, "If ```showLogin``` is ```true``` when you render the component, render ```ShowLogin``` too. Otherwise, don't render it."
+What's going on after the phone ```p``` tag *looks* complicated, but it's just a fancy ```if``` statement stolen from React's docs on [conditional rendering](https://facebook.github.io/react/docs/conditional-rendering.html). We're saying, "If ```showLogin``` is ```true``` when you render the component, render ```LoginInfo``` too. Otherwise, don't render it."
 
 You'll also noticed we added an ```onClick``` property to our ```img``` tag. That's how we tell React to run the component's ```toggleLoginInfo``` method when someone clicks the picture.
 
 Save your files, ```npm start``` and click on a photo. You should see login information appear and disappear as you click! That's conditional rendering - not too tricky, right?
+
+Before things get any messier, let's take a bit to [clean up our project structure](https://github.com/KiaFarhang/react-meetup/tree/stage-5).
