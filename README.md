@@ -1,6 +1,6 @@
 # Rendering Multiple Components #
 
-Why use React for one-off UI elements? Well, you probably shouldn't. The framework's power comes in rendering many of the same type of component - often with different properties - across different sections of the app. To do that, we're going to create a ```PersonList``` component that will generate *multiple* ```Person```s based on the properties we pass it. Create a new file called ```PersonList.js```, importing React (because we always have to) and the ```Person``` we just created (because we'll be calling it here).
+Why use React for one-off UI elements? Well, you probably shouldn't. The framework's power comes in rendering many of the same type of component - often with different properties - across different sections of the app. To do that, we're going to create a ```PersonList``` component that will generate *multiple* ```Person```s based on the properties we pass it. Create a new file called ```PersonList.jsx```, importing React (because we always have to) and the ```Person``` we just created (because we'll be calling it here).
 
 ```
 import React, { Component } from 'react';
