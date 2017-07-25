@@ -2,7 +2,7 @@
 
 We created a React component that accepts an array of person objects and renders them on the page. But we don't want to code those people ourselves. For our app to scale, we need this component to fetch as many people as we like from *another source*. We'll use the [Random User Generator's API](https://randomuser.me/) for this demonstration, but the concept would work similarly if we wanted to grab people from our app's database.
 
-To separate API and presentational logic, we're going to create a container component - call it ```PersonListContainer.js```. Its *only* task will be to grab people from the API, package them in the manner ```PersonList``` expects, then render a ```PersonList``` component with those people. Let's dive in!
+To separate API and presentational logic, we're going to create a container component - call it ```PersonListContainer.jsx```. Its *only* task will be to grab people from the API, package them in the manner ```PersonList``` expects, then render a ```PersonList``` component with those people. Let's dive in!
 
 ```
 import React, { Component } from 'react';
@@ -32,7 +32,7 @@ constructor(props){
 }
 ```
 
-Before we jump to the ```render()``` method, we're giving our component a custom constructor. This is basically us saying "Yo, before React creates you like it creates every other component, we gotta add some special stuff." (You'll see why shortly). The ```constructor()``` method accepts a ```props``` object, as per usual.
+Before we jump to the ```render()``` method, we're giving our component a custom constructor. This is basically us saying "Yo, before React creates you like it creates every other component, we gotta add some special stuff." (You'll see why shortly). The ```constructor()``` method accepts a ```props``` object, though in this case we won't actually use it.
 
 ```super();```
 
@@ -114,7 +114,7 @@ import PersonList from './PersonList';
 import backupPeople from './people.json';
 ```
 
-`people.json` is just a JSON file with the results from a call to the random user API. we import it as a variable so, if anything fails, the component still has some fallback data to parse and display.
+`people.json` is just a JSON file with the results from a call to the random user API. We import it as a variable so, if anything fails, the component still has some fallback data to parse and display.
 
 The rest of our component is pretty basic. We render a ```PersonList``` component, but instead of passing it something from ```this.props```, we give it ```this.state.data``` instead.
 
