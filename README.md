@@ -18,7 +18,7 @@ Now let's get started!
 
 So far, everything we've built lives in the `App` component, which the `index.js` file in our `src` file renders. Let's call this the home page of our app - a screen full of users.
 
-To learn how React Router, we're going to explicitly tell it to render the `PersonListContainer` component (and everything inside it) when anyone visits the root `/` path of the app.
+To learn how React Router works, we're going to explicitly tell it to render the `PersonListContainer` component (and everything inside it) when anyone visits the root `/` path of the app.
 
 Open up `src/index.js` and add the following line to your import statements:
 
@@ -37,7 +37,7 @@ ReactDOM.render(
 
 Next, open up `App/index.js` and import [React Router's `Route`](https://reacttraining.com/react-router/web/api/Route) component:
 
-import { Route } from 'react-router-dom';
+`import { Route } from 'react-router-dom';`
 
 To better understand React Router, it helps to keep in mind that _a route is just a component_. We're basically going to say, "Hey, when the URL path matches x, render x component. If it matches y, render y component instead."
 
@@ -107,7 +107,7 @@ const components = people.map(function(person: Object, index: number){
   });
 ```
 
-Great - now our each `Person` component will have access to that user's ID. Open up `Person/index.jsx` and import what we need from React Router up top:
+Great - now each `Person` component will have access to that user's ID. Open up `Person/index.jsx` and import what we need from React Router up top:
 
 `import { Link } from 'react-router-dom';`
 
