@@ -4,7 +4,7 @@ Our demo app will display users on a page based on data we retrieve from the [Ra
 
 This is where React becomes very useful. React lets us define a component as a reusable piece of UI - what it looks like and how it functions - *once*. We can then use it anywhere in our app by calling it like we would a native HTML element, like a ```<div>``` or a ```<p>``` tag.
 
-Let's take an example to show you what I mean. Open up the ```src``` folder of our project and create a new file named ```Person.js```. (React style is to start component names with upper-case letters.) Start it with the following lines:
+Let's take an example to show you what I mean. Open up the ```src``` folder of our project and create a new file named ```Person.jsx```. (React style is to start component names with upper-case letters.) Start it with the following lines:
 
 ```
 import React, { Component } from 'react';
@@ -35,9 +35,9 @@ Looks weird, right? This is JSX - an extension to JavaScript that lets us better
 
 So what does a Person look like? For the most part, it's pretty basic HTML - a container ```<div>```, an image, heading, and two ```<p>``` tags for contact information. 
 
-Those curly braces, however, are *not* standard HTML. They're references to the *properties* of the Person component, which we define when we create the component. Just like every React component has a render() method, they all accept a single "props" object argument containing read-only properties.
+Those curly braces, however, are *not* standard HTML. They're references to the *properties* of the Person component, which we define when we create the component. Just like every React component has a render() method, they all accept "props" arguments containing read-only properties.
 
-Using the above code, I can call a Person component anywhere in my app, pass it the person's name, email, phone number and a link to their image, and React will dynamically add those properties where I've referenced them with ```{this.props.name}``` and the like. Before doing that, though, we need to add one more line to our ```Person.js``` file:
+Using the above code, I can call a Person component anywhere in my app, pass it the person's name, email, phone number and a link to their image, and React will dynamically add those properties where I've referenced them with ```{this.props.name}``` and the like. Before doing that, though, we need to add one more line to our ```Person.jsx``` file:
 
 ```
 export default Person;
