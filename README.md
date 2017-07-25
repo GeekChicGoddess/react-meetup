@@ -237,7 +237,7 @@ class Person extends Component {
   };
 ```
 
-There - much easier than hunting and pecking through the component's `render` method to see exactly where we refer to `this.props`. Check this out, too: head into `PersonList` and remove the change the `map` function so we don't pass a `name` property to the `Person`s we create:
+There - much easier than hunting and pecking through the component's `render` method to see exactly where we refer to `this.props`. Check this out, too: head into `PersonList` and change the `map` function so we don't pass a `name` property to the `Person`s we create:
 
 ```
     const components = people.map(function(person: Object, index: number){
@@ -301,3 +301,5 @@ code that throws an error here
 ```
 
 You can also set your own ignore flags [in your `.flowconfig` file.](https://flow.org/en/docs/config/options/)
+
+Having fun? We're not done yet - next it's time to [turn this into a multi-page application](https://github.com/KiaFarhang/react-meetup/tree/stage-7) with help from the React Router.
