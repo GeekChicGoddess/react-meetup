@@ -18,7 +18,7 @@ We'll start with our `App` component and use the same process for the rest. Crea
 
 Head into that new `App` folder and change `App.jsx` to `index.jsx`. That'll help us cut down on the `import` code we have to write later.
 
-I'll walk you through one more example. Create a `Person` next to the `App` one in `src/components`, and drop `Person.jsx` and `Person.css` inside. Then change `Person.jsx` to `index.jsx`.
+I'll walk you through one more example. Create a `Person` folder next to the `App` one in `src/components`, and drop `Person.jsx` and `Person.css` inside. Then change `Person.jsx` to `index.jsx`.
 
 Repeat this process for our `PersonList`, `LoginInfo` and `PersonListContainer` components. Remember the `people.json` file we created with mock API results? Throw that in with `PersonListContainer`, because that's the component that uses it.
 
@@ -32,7 +32,7 @@ Head into `index.js` and change this line:
 
 to:
 
-`import App from ./components/App;`
+`import App from './components/App';`
 
 That'll point the app's entry point to the new location of the `App` component.
 
@@ -51,4 +51,4 @@ Remember when we changed all the components' `.jsx` files to `index.jsx`? This i
 
 That's just unecessary extra work.
 
-We've got a good foundation to build out our project. Let's take one more detour, though, and explore a powerful tool to improve code readability and cut down on debugging nightmares.
+We've got a good foundation to build out our project. Let's take one more detour, though, and explore [a powerful tool to improve code readability](https://github.com/KiaFarhang/react-meetup/tree/stage-6) and cut down on debugging nightmares.
